@@ -1,3 +1,5 @@
+// Jonlier Díaz Rivera
+
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 
@@ -5,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <queue>
 using namespace std;
 
 template <typename T> string toStr(const T &value) {
@@ -111,9 +114,46 @@ public:
   // Remove x from the tree. Nothing is done if x is not found.
   void remove(const Comparable &x) { remove(x, root); }
 
+  // Esta función devuelve un string con el recorrido por niveles del árbol
   string BFT() const {
-    string st;
-    return st;
+    if (isEmpty()) return "[]"; // Si el árbol está vacío
+
+    string ss; 
+    queue<BinaryNode*> q; // Se utiliza una fila para guardar los nodos 
+
+    q.push(root); // Inserta el root en la fila
+
+    ss += "[";
+
+    while (!q.empty()) {
+      
+      int levelSize = q.size(); // Número de nodos en el nivel actual
+      
+      ss += "[";
+
+      // Itera sobre los nodos del nivel actual
+      for (int i = 0; i < levelSize; ++i) { 
+        BinaryNode* current = q.front();
+        q.pop();
+
+        ss += toStr(current->element); // Inserta el elemento actual
+
+        if (i < levelSize - 1) ss += ",";
+
+        if (current->left != nullptr) { // Inserta los hijos izquierdos en la fila
+          q.push(current->left); 
+        }
+        if (current->right != nullptr) { // Inserta los hijos derechos en la fila
+          q.push(current->right);
+        }
+      }
+
+      ss += "]"; // Cierra la lista para el nivel actual
+
+      if (!q.empty()) ss += ",";
+    }
+    ss += "]"; // Cierra el string
+    return ss; // Devuelve el string
   }
 
 private:
